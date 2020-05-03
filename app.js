@@ -7,6 +7,32 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
+/* Mongoose Settings */
+
+const mongoose = require("mongoose");
+
+const Dishes = require("./models/dishes");
+const Promotions = require("./models/promotions");
+const Leaders = require("./models/leaders");
+
+const url = "mongodb://localhost:27017/restaurant";
+
+const connect = mongoose.connect(url, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
+
+connect.then(
+  (db) => {
+    console.log("Connected correctly to the server properly");
+  },
+  (err) => {
+    console.log(err);
+  }
+);
+
 var app = express();
 
 const dishRouter = require("./routes/dishRouter");
