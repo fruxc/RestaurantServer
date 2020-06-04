@@ -9,16 +9,22 @@ var passport = require("passport");
 var authenticate = require("./authenticate");
 var config = require("./config");
 
+/* Routes Imports */
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var dishRouter = require("./routes/dishRouter");
 var promoRouter = require("./routes/promoRouter");
 var leaderRouter = require("./routes/leaderRouter");
 var uploadRouter = require("./routes/uploadRouter");
+var favRouter = require("./routes/favRouter");
 
 /* Mongoose Settings */
 
 const mongoose = require("mongoose");
+mongoose.Promise = require("bluebird");
+
+/* Schema Imports */
 
 const Dishes = require("./models/dishes");
 const Promotions = require("./models/promotions");
@@ -79,6 +85,7 @@ app.use("/imageUpload", uploadRouter);
 app.use("/leaders", leaderRouter);
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
+app.use("/favorites", favRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
