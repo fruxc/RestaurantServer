@@ -50,10 +50,18 @@ favoriteRouter
                 favorite.dishes.push(req.body.dishes[dish]);
               }
               favorite.save().then((favorite) => {
-                console.log("Favorites has been added successfully", favorite);
-                res.statusCode = 200;
-                res.setHeader("Content-Type", "application/json");
-                res.json(favorite);
+                Favorites.findById(favorite._id)
+                  .populate("user")
+                  .populate("dishes")
+                  .then((favorite) => {
+                    console.log(
+                      "Favorites has been added successfully",
+                      favorite
+                    );
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(favorite);
+                  });
               });
             },
             (err) => next(err)
@@ -66,10 +74,18 @@ favoriteRouter
           }
         }
         favorite.save().then((favorite) => {
-          console.log("Favorite added ", favorite);
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(favorite);
+          Favorites.findById(favorite._id)
+            .populate("user")
+            .populate("dishes")
+            .then((favorites) => {
+              console.log("Favorite added ", favorite);
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.json(favorite);
+            })
+            .catch((err) => {
+              return next(err);
+            });
         });
       }
     });
@@ -134,10 +150,15 @@ favoriteRouter
             (favorite) => {
               favorite.dishes.push(req.params.dishId);
               favorite.save().then((favorite) => {
-                console.log("Favorite Created ", favorite);
-                res.statusCode = 200;
-                res.setHeader("Content-Type", "application/json");
-                res.json(favorite);
+                Favorites.findById(favorite._id)
+                  .populate("user")
+                  .populate("dishes")
+                  .then((favorite) => {
+                    console.log("Favorite Created ", favorite);
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(favorite);
+                  });
               });
             },
             (err) => next(err)
@@ -146,12 +167,22 @@ favoriteRouter
       } else {
         if (favorite.dishes.indexOf(req.params.dishId) < 0) {
           favorite.dishes.push(req.params.dishId);
-          favorite.save().then((favorite) => {
-            console.log("Favorite added ", favorite);
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json(favorite);
-          });
+          favorite
+            .save()
+            .then((favorite) => {
+              Favorites.findById(favorite._id)
+                .populate("user")
+                .populate("dishes")
+                .then((favorite) => {
+                  console.log("Favorite added ", favorite);
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.json(favorite);
+                });
+            })
+            .catch((err) => {
+              return next(err);
+            });
         } else {
           res.statusCode = 200;
           res.end("Favorite already added!!");
@@ -178,10 +209,15 @@ favoriteRouter
         favorite
           .save()
           .then(
-            (resp) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(resp);
+            (favorite) => {
+              Favorites.findById(favorite._id)
+                .populate("user")
+                .populate("dishes")
+                .then((favorite) => {
+                  res.statusCode = 200;
+                  res.setHeader("Content-Type", "application/json");
+                  res.json(favorite);
+                });
             },
             (err) => next(err)
           )
